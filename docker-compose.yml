@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  redis:
+    image: redis:alpine
+    networks:
+      - backend
+    # ports:
+    #   - "6379:6379"
+    restart: unless-stopped
+  ssh-server:
+    image: nhahv/sshd-server:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - backend
+    ports:
+      - "2422:22"  # Map host port 2222 to container port 22
+    environment:
+      SSH_USER: 'user'
+      SSH_PASSWORD: 'password'
+    restart: unless-stopped
+networks:
+  backend:
+    external: true
